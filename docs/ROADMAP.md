@@ -1,6 +1,6 @@
 # Roadmap
 
-This roadmap adapts the provided qa11y build brief into public milestones. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
+This roadmap adapts the provided AccessRecheck build brief into public milestones. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
 
 ## 1. Scaffold
 

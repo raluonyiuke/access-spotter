@@ -3,7 +3,7 @@ dist/
 coverage/
 playwright-report/
 test-results/
-qa11y-results/
+accessrecheck-results/
 .env
 .env.*
 !.env.example

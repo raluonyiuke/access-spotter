@@ -1,4 +1,6 @@
-# qa11y
+# AccessRecheck
+
+Check website accessibility, record human review, and catch regressions before they ship.
 
 A website accessibility QA kit in early development. The goal is to help teams find barriers, record human review, and catch regressions before shipping.
 
@@ -9,8 +11,8 @@ A website accessibility QA kit in early development. The goal is to help teams f
 Requires Node.js 22 or newer and npm.
 
 ```sh
-git clone https://github.com/raluonyiuke/qa11y.git
-cd qa11y
+git clone https://github.com/raluonyiuke/accessrecheck.git
+cd accessrecheck
 npm ci
 npm run build
 node dist/cli.js --help
@@ -21,8 +23,11 @@ To install the command locally from this checkout:
 
 ```sh
 npm install -g .
-qa11y --help
+accessrecheck --help
+arc --help
 ```
+
+Both `accessrecheck` and the short alias `arc` run the same CLI. If another installed tool already uses `arc`, use `accessrecheck` to avoid ambiguity.
 
 A URL or unsupported argument exits with code 2 because scanning is not implemented. Help and version commands exit with code 0; this does not indicate an accessibility result.
 
@@ -38,7 +43,7 @@ The intended default is WCAG 2.2 AA. Selecting a profile will not determine whic
 
 ## Limits
 
-qa11y does not certify ADA compliance. Automated checks cannot establish WCAG conformance on their own; human evaluation is required. Any future passing result will describe only the tested scope and evidence, not a legal determination. Legal applicability depends on the site and its obligations; this project does not provide legal advice.
+AccessRecheck does not certify ADA compliance. Automated checks cannot establish WCAG conformance on their own; human evaluation is required. Any future passing result will describe only the tested scope and evidence, not a legal determination. Legal applicability depends on the site and its obligations; this project does not provide legal advice.
 
 ## Development
 
@@ -54,8 +59,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CHANGEL
 
 ## Related projects
 
-[Pa11y](https://github.com/pa11y/pa11y) already provides automated testing, configurable actions, screenshots, and reporters; [Pa11y CI](https://github.com/pa11y/pa11y-ci) supports multi-page CI runs. These are established options for automated testing today. qa11y's proposed focus is explicit criterion coverage, recorded human review, and regression evidence. The [landscape note](docs/LANDSCAPE.md) records the preliminary comparison; it does not claim no comparable tool exists.
+[Pa11y](https://github.com/pa11y/pa11y) already provides automated testing, configurable actions, screenshots, and reporters; [Pa11y CI](https://github.com/pa11y/pa11y-ci) supports multi-page CI runs. These are established options for automated testing today. AccessRecheck's proposed focus is explicit criterion coverage, recorded human review, and regression evidence. The [landscape note](docs/LANDSCAPE.md) records the preliminary comparison; it does not claim no comparable tool exists.
 
 ## License
 
-MIT for original qa11y code. Dependencies retain their own licenses, including MPL-2.0 for axe-core. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT for original AccessRecheck code. Dependencies retain their own licenses, including MPL-2.0 for axe-core. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -2,6 +2,8 @@
 
 ## Unreleased - 0.1.0 scaffold
 
+- Renamed the project to AccessRecheck, with `accessrecheck` and `arc` CLI commands.
+
 - TypeScript Node CLI with help and version output.
 - axe-core and Playwright dependencies for future scan implementation.
 - CLI tests and Node.js 22/24 CI.

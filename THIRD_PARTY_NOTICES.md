@@ -1,6 +1,6 @@
 # Third-party dependencies
 
-Original qa11y code is MIT-licensed. Dependencies are separately licensed; the project's MIT license does not replace theirs.
+Original AccessRecheck code is MIT-licensed. Dependencies are separately licensed; the project's MIT license does not replace theirs.
 
 | Direct dependency | License | Source |
 | --- | --- | --- |
