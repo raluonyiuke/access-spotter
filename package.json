@@ -1,0 +1,23 @@
+{
+  "name": "qa11y",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Website accessibility QA kit — early development scaffold",
+  "type": "module",
+  "license": "MIT",
+  "bin": { "qa11y": "dist/cli.js" },
+  "files": ["dist", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
+  "engines": { "node": ">=22" },
+  "repository": { "type": "git", "url": "git+https://github.com/raluonyiuke/qa11y.git" },
+  "bugs": { "url": "https://github.com/raluonyiuke/qa11y/issues" },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "check": "npm run typecheck && npm test",
+    "start": "node dist/cli.js",
+    "prepack": "npm run build"
+  },
+  "dependencies": { "axe-core": "^4.14.0", "playwright": "^1.64.1" },
+  "devDependencies": { "@types/node": "^26.6.6", "typescript": "^7.0.2" }
+}

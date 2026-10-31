@@ -1,0 +1,16 @@
+name: Bug report
+description: Report reproducible behavior in an implemented feature.
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Include commands, Node.js version, and a minimal synthetic example. Remove private URLs and credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
