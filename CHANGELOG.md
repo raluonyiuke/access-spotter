@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — 0.1.0 scaffold
+## Unreleased - 0.1.0 scaffold
 
 - TypeScript Node CLI with help and version output.
 - axe-core and Playwright dependencies for future scan implementation.

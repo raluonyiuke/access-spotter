@@ -5,7 +5,7 @@ const { version } = JSON.parse(
   readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
 ) as { version: string };
 
-const help = `qa11y — website accessibility QA kit
+const help = `qa11y - website accessibility QA kit
 
 Usage: qa11y [--help | --version]
 

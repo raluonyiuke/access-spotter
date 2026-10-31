@@ -2,7 +2,7 @@
   "name": "qa11y",
   "version": "0.1.0",
   "private": true,
-  "description": "Website accessibility QA kit — early development scaffold",
+  "description": "Website accessibility QA kit - early development scaffold",
   "type": "module",
   "license": "MIT",
   "bin": { "qa11y": "dist/cli.js" },
