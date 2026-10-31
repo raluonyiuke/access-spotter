@@ -2,6 +2,8 @@
 
 ## Unreleased - 0.1.0 scaffold
 
+- Include linked documentation in the package and verify both installed CLI commands in CI.
+- Align Node.js type definitions with the supported Node 22 minimum.
 - Renamed the project to AccessRecheck, with `accessrecheck` and `arc` CLI commands.
 
 - TypeScript Node CLI with help and version output.

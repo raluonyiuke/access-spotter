@@ -1,6 +1,6 @@
 # Roadmap
 
-This roadmap adapts the provided AccessRecheck build brief into public milestones. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
+This roadmap defines the public milestones for AccessRecheck. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
 
 ## 1. Scaffold
 

@@ -50,10 +50,10 @@ AccessRecheck does not certify ADA compliance. Automated checks cannot establish
 ```sh
 npm ci
 npm run check
-npm pack --dry-run
+npm run test:package
 ```
 
-The scaffold uses TypeScript, axe-core, and Playwright. Browser installation will be documented when scans are implemented; no browser download is needed for the scaffold checks. GitHub Actions runs type checking and CLI tests on Node.js 22 and 24.
+The CLI is built with TypeScript. axe-core and Playwright are installed for future scan implementation. Browser installation will be documented when scans are implemented; no browser download is needed for the scaffold checks. GitHub Actions runs type checking, CLI tests, and package installation checks on Node.js 22 and 24. The package check installs a temporary tarball, exercises both commands, and checks that linked documentation is included. It requires npm registry access for dependencies and leaves global commands untouched.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CHANGELOG.md](CHANGELOG.md).
 
