@@ -2,6 +2,7 @@
 
 ## Unreleased - 0.1.0 scaffold
 
+- Position AccessRecheck for developers and website builders, with a planned local development and pull request workflow.
 - Include linked documentation in the package and verify both installed CLI commands in CI.
 - Align Node.js type definitions with the supported Node 22 minimum.
 - Renamed the project to AccessRecheck, with `accessrecheck` and `arc` CLI commands.

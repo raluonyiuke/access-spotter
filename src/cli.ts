@@ -7,6 +7,7 @@ const { version } = JSON.parse(
 
 const help = `AccessRecheck
 Check website accessibility, record human review, and catch regressions before they ship.
+For developers and people building websites.
 
 Usage: accessrecheck [--help | --version]
        arc [--help | --version]
@@ -16,7 +17,7 @@ Options:
   -v, --version  Show the scaffold version
 
 Status: early development. Scanning is not implemented yet.
-Planned: URL discovery, WCAG checks, evidence, human review, and baselines.
+Planned: URL discovery, WCAG checks, fix guidance, evidence, human review, and baselines.
 
 AccessRecheck does not certify ADA compliance. Automated checks cannot determine
 WCAG conformance on their own; human evaluation is required.

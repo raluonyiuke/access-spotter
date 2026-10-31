@@ -2,7 +2,7 @@
   "name": "accessrecheck",
   "version": "0.1.0",
   "private": true,
-  "description": "Check website accessibility, record human review, and catch regressions before they ship.",
+  "description": "Accessibility QA for developers and website builders. Check website accessibility, record human review, and catch regressions before they ship.",
   "type": "module",
   "license": "MIT",
   "bin": {

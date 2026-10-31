@@ -2,13 +2,32 @@
 
 Check website accessibility, record human review, and catch regressions before they ship.
 
-A website accessibility QA kit in early development. The goal is to help teams find barriers, record human review, and catch regressions before shipping.
+An accessibility QA CLI for developers and people building websites. AccessRecheck is being built to fit the work between changing a page and shipping it: find barriers, understand what to fix, check the result, and keep fixed issues from returning.
 
 **Status: Phase 1 scaffold.** The CLI currently provides help and version information only. URL scanning, reports, manual checklists, and baselines are planned; they do not work yet. This project is not published to npm.
 
+## Who we're building it for
+
+- Developers building websites and web apps who want accessibility checks during local development and pull request review.
+- Freelancers and agencies checking client sites before launch and after changes.
+- People building sites with a CMS or website builder who want plain-language findings and a checklist they can follow or share with a developer.
+
+The current scaffold requires Git, a terminal, Node.js, and npm. The planned CLI will check browser-accessible pages, including local development servers and authorized staging previews. People using a website builder will need a reachable preview or published URL; a builder-specific integration is not currently planned.
+
+## Intended workflow
+
+The following workflow is planned, not available in the scaffold:
+
+1. Point AccessRecheck at a page on your local development server or a staging site you are authorized to test.
+2. Get findings with the affected element, the reason it matters, and guidance on what to fix.
+3. Make the change, rerun the checks, and complete the guided keyboard and other human checks that automation cannot settle.
+4. Save a baseline and run checks in pull requests so new failures are caught while existing failures stay visible.
+
+The planned HTML report will make it easier to share findings with teammates and clients who do not use the terminal.
+
 ## Try the scaffold
 
-Requires Node.js 22 or newer and npm.
+Requires Git, Node.js 22 or newer, and npm.
 
 ```sh
 git clone https://github.com/raluonyiuke/accessrecheck.git
@@ -36,7 +55,7 @@ A URL or unsupported argument exits with code 2 because scanning is not implemen
 - Single URLs, configured URL lists, and opt-in bounded same-origin crawling.
 - axe-core scans at desktop and mobile widths, mapped to WCAG 2.0, 2.1, or 2.2 at levels A and AA.
 - Reflow, keyboard interaction, and rendered contrast checks, with uncertain findings sent to human review.
-- A guided manual checklist and a readable HTML report with evidence.
+- A guided manual checklist and a readable HTML report with evidence and fix guidance.
 - Regression baselines that keep known failures visible and fail CI on new failures.
 
 The intended default is WCAG 2.2 AA. Selecting a profile will not determine which standard legally applies. A clean automated scan must never automatically promote an entire criterion to passed. See the [roadmap](docs/ROADMAP.md) for milestones and acceptance criteria.

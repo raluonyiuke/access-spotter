@@ -2,6 +2,10 @@
 
 This roadmap defines the public milestones for AccessRecheck. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
 
+## Audience and workflow
+
+Build for developers and people building websites, including freelancers, agencies, and CMS or website-builder users who can run a CLI against a reachable page. Prioritize local development, authorized staging previews, actionable fixes, and pull request checks. Explain findings in plain language so builders can act on them or share them with a developer. Keep terminal setup requirements explicit.
+
 ## 1. Scaffold
 
 - [x] Public repository, TypeScript Node CLI, axe-core and Playwright dependencies.
@@ -11,6 +15,7 @@ This roadmap defines the public milestones for AccessRecheck. Unchecked items ar
 ## 2. Page discovery
 
 - [ ] Accept one HTTP(S) URL or an explicit configuration file listing URLs.
+- [ ] Support reachable local development servers and authorized staging URLs; document preview authentication limitations.
 - [ ] Validate configuration and define stable data shapes for pages, evidence, and errors.
 - [ ] Opt-in same-origin crawler with depth and page-count limits; enforce origin bounds across redirects.
 - [ ] Test discovery against local fixtures, including cycles, redirects, and malformed inputs.
@@ -29,6 +34,7 @@ This roadmap defines the public milestones for AccessRecheck. Unchecked items ar
 
 - [ ] Self-contained HTML evidence report grouped by criterion, plus terminal summary.
 - [ ] Pass, fail, needs-review, and explicit untested coverage; failure screenshots.
+- [ ] For actionable findings, show the affected page and element, explain the impact, and provide fix guidance; keep uncertain findings marked for human review.
 - [ ] Treat scanned content as untrusted and escape it in output.
 - [ ] axe scan of the report itself, plus keyboard and responsive visual checks.
 
@@ -44,6 +50,7 @@ This roadmap defines the public milestones for AccessRecheck. Unchecked items ar
 - [ ] Exit 1 on regressions; keep known failures visible as still-open.
 - [ ] Distinguish execution errors from scan decisions; define review policy explicitly.
 - [ ] Ready-to-use GitHub Action and fixture e2e CI.
+- [ ] Document the pull request workflow, including how to start and wait for a local test server before scanning it.
 
 ## 7. Release documentation
 
@@ -52,5 +59,6 @@ This roadmap defines the public milestones for AccessRecheck. Unchecked items ar
 - [ ] Verify any legal summaries against primary sources immediately before publishing them.
 - [ ] Review dependency notices and package contents; ensure no credentials or private scan evidence are included.
 - [ ] First-time user can run a scan and understand the report without reading source.
+- [ ] Document a local development example and a reachable website-builder preview example, with prerequisites and limitations.
 
 No npm release is part of the scaffold milestone. The package is marked private until a deliberate release preparation change.
