@@ -77,9 +77,7 @@ Access-Spotter was created to make accessibility a repeatable part of building w
 
 **A clean automated scan leaves questions unanswered.** W3C says tools alone cannot establish accessibility; knowledgeable human evaluation is required. Involving people with disabilities can also reveal usability issues that conformance evaluation alone misses. Access-Spotter's planned manual checklist will help record human review, while keeping untested and uncertain results visible. It will support, rather than replace, expert evaluation and testing with disabled users. [Sources: W3C evaluation overview](https://www.w3.org/WAI/test-evaluate/), [involving users in evaluation](https://www.w3.org/WAI/test-evaluate/involving-users/).
 
-Access-Spotter aims to offer another open-source option that brings actionable findings, human review, and regression tracking together for website builders. Existing tools already support these practices: Playwright documents snapshotting fingerprints of known violations, and a11y-loop combines browser audits, finding comparisons, CI, and a manual-review checklist. Access-Spotter does not claim to have invented these techniques or to offer capabilities that have not been implemented. [Sources: Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing), [a11y-loop](https://github.com/ChanMeng666/a11y-loop).
-
-See the [research notes](docs/RESEARCH.md) for the evidence, limitations, and implications for the planned product, and the [landscape comparison](docs/LANDSCAPE.md) for existing options.
+See the [research notes](docs/RESEARCH.md) for the evidence and limitations behind the project. The [landscape comparison](docs/LANDSCAPE.md) covers related tools and reuse considerations for contributors.
 
 ## Who we're building it for
 
@@ -135,9 +133,9 @@ To build a release tarball and its SHA-256 checksum without publishing, run `npm
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CHANGELOG.md](CHANGELOG.md).
 
-## Related projects
+## Built with Playwright and axe-core
 
-[Pa11y](https://github.com/pa11y/pa11y) and [Pa11y CI](https://github.com/pa11y/pa11y-ci) provide automated testing and CI workflows. [Playwright with axe](https://playwright.dev/docs/accessibility-testing) supports checks within browser tests and snapshots for known issues. [Accessibility Insights for Web](https://accessibilityinsights.io/docs/web/overview/) offers automated and guided manual assessment. [a11y-loop](https://github.com/ChanMeng666/a11y-loop) documents browser audits, finding comparisons, CI, and a manual-review checklist. These overlap with Access-Spotter's plans. See the [landscape comparison](docs/LANDSCAPE.md) for scope and reuse considerations.
+Access-Spotter uses [Playwright](https://playwright.dev/) to load pages in Chromium and [axe-core](https://github.com/dequelabs/axe-core) to detect accessibility issues. Automated checks complement human evaluation.
 
 ## License
 
