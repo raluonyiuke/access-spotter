@@ -3,10 +3,11 @@ dist/
 coverage/
 playwright-report/
 test-results/
-accessrecheck-results/
+access-recheck-results/
 .env
 .env.*
 !.env.example
 *.log
 .DS_Store
 *.tgz
+accessrecheck-results/

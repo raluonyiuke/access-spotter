@@ -32,7 +32,7 @@ export async function writeReport(filename: string, report: ScanReport): Promise
 }
 
 export function renderReport(report: ScanReport): string {
-  const lines = ['AccessRecheck', `Requested: ${report.requestedUrl}`,
+  const lines = ['Access-Recheck', `Requested: ${report.requestedUrl}`,
     `Automated axe rules tagged for WCAG ${report.wcag.version} A/AA`, ''];
   for (const viewport of report.viewports) {
     lines.push(`${viewport.name} (${viewport.width} x ${viewport.height})`,
@@ -54,6 +54,6 @@ export function renderReport(report: ScanReport): string {
     'Occurrences count affected nodes separately in each viewport; the same issue may appear twice.', '', 'Human checks still required:');
   for (const check of report.manualChecks) lines.push(`  [${check.status}] ${check.instructions}`);
   lines.push('', 'Scope and limitations:', ...report.limitations.map(item => `  ${item}`),
-    '', 'AccessRecheck does not certify ADA compliance. No automated scan establishes WCAG conformance.');
+    '', 'Access-Recheck does not certify ADA compliance. No automated scan establishes WCAG conformance.');
   return `${lines.join('\n')}\n`;
 }

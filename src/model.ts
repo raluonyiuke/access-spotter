@@ -38,7 +38,7 @@ export interface ViewportResult {
 export interface ScanReport {
   schemaVersion: 1;
   status: 'completed';
-  tool: { name: 'AccessRecheck'; version: string; axeVersion: string };
+  tool: { name: 'Access-Recheck'; version: string; axeVersion: string };
   startedAt: string;
   finishedAt: string;
   requestedUrl: string;

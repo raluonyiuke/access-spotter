@@ -25,18 +25,18 @@ async function npm(args, cwd, expected = 0, env = {}) {
   }
 }
 
-test('release tarball installs without build tools and both commands scan real pages', async () => {
-  const temporary = await mkdtemp(join(tmpdir(), 'accessrecheck-package-'));
+test('release tarball installs without build tools and all commands scan real pages', async () => {
+  const temporary = await mkdtemp(join(tmpdir(), 'access-recheck-package-'));
   const fixture = await startFixture();
   try {
     await npm(['pack', '--pack-destination', temporary, '--silent'], root);
-    const archive = join(temporary, `accessrecheck-${version}.tgz`);
+    const archive = join(temporary, `access-recheck-${version}.tgz`);
     const prefix = join(temporary, 'installed');
     // Normal install, including lifecycle scripts, but no dev dependencies.
     await npm(['install', '--prefix', prefix, '--omit=dev', '--no-audit', '--no-fund', archive], temporary);
-    const installed = join(prefix, 'node_modules', 'accessrecheck');
+    const installed = join(prefix, 'node_modules', 'access-recheck');
     await assert.rejects(readFile(join(prefix, 'node_modules', 'typescript', 'package.json')));
-    for (const alias of ['accessrecheck', 'arc']) {
+    for (const alias of ['access-recheck', 'arc', 'accessrecheck']) {
       const invoke = args => ['exec', '--offline', '--prefix', prefix, '--', alias, ...args];
       assert.match(await npm(invoke(['--help']), temporary), /arc scan <url>/);
       assert.equal((await npm(invoke(['--version']), temporary)).trim(), version);

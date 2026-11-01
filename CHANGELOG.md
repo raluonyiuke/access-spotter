@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Use Access-Recheck for the display name and access-recheck for the repository, package, and primary CLI command.
+- Retain arc and the original accessrecheck command as aliases.
+- Change the JSON report tool.name field to Access-Recheck.
+- Update install links and document migration from the original package.
+
 ## 0.1.0
 
 - Ship an installable single-page accessibility scanner through GitHub Releases.

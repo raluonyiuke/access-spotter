@@ -100,7 +100,7 @@ export async function scan(options: ScanOptions, version: string, cancellation: 
       { id: 'states', status: 'untested', instructions: 'Review authenticated pages, iframe content, expanded menus, dialogs, and validation/error states separately.' },
     ];
     if (options.wcag !== '2.2') manualChecks.push({ id: '4.1.1', status: 'needs-human-review', instructions: 'WCAG 4.1.1 Parsing is not tested by this scan. Review it separately for WCAG 2.0/2.1 obligations.' });
-    return { schemaVersion: 1, status: 'completed', tool: { name: 'AccessRecheck', version, axeVersion: axe.version },
+    return { schemaVersion: 1, status: 'completed', tool: { name: 'Access-Recheck', version, axeVersion: axe.version },
       startedAt, finishedAt: new Date().toISOString(), requestedUrl: publicUrl(url),
       wcag: { version: options.wcag, level: 'AA', scope: 'automated-axe-rules-only' },
       summary: { decision: violationOccurrences ? 'fail' : 'needs-human-review', violationOccurrences, reviewOccurrences },
@@ -110,7 +110,7 @@ export async function scan(options: ScanOptions, version: string, cancellation: 
         'Only the loaded state is scanned. Iframe contents, interactions, and authenticated journeys are untested.',
         `Waited for page load${options.waitFor ? ' and the configured visible selector' : ''}, then ${options.wait} ms. Later-rendered content may be missed.`,
         'Requested and final URL queries and fragments are omitted. Selectors, page titles, and guidance may still contain sensitive page content.',
-        'No interactions are clicked or forms submitted by AccessRecheck. Visiting a page still runs its scripts and network requests.',
+        'No interactions are clicked or forms submitted by Access-Recheck. Visiting a page still runs its scripts and network requests.',
       ] };
   } finally { clearTimeout(timer); await browser?.close().catch(() => {}); }
 }

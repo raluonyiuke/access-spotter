@@ -7,12 +7,12 @@ import { renderReport, safeText, writeReport } from './output.js';
 import type { WcagVersion } from './model.js';
 
 const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
-const help = `AccessRecheck
+const help = `Access-Recheck
 Check website accessibility, record human review, and catch regressions before they ship.
 For developers and people building websites.
 
 Usage: arc scan <url> [options]
-       accessrecheck <url> [options]
+       access-recheck <url> [options]
        arc setup
 
 Options:
@@ -35,7 +35,7 @@ No crawling, interactive manual-review recording, HTML reports, or baselines yet
 
 Exit codes: 0 = no automated violations (human review still required),
             1 = automated violations, 2 = input/execution error.
-AccessRecheck does not certify ADA compliance. Automated checks cannot determine
+Access-Recheck does not certify ADA compliance. Automated checks cannot determine
 WCAG conformance on their own; human evaluation is required.
 `;
 
@@ -92,7 +92,7 @@ try {
 } catch (error) {
   const message = safeText(error instanceof Error ? error.message : String(error));
   if (json) process.stdout.write(`${JSON.stringify({ schemaVersion: 1, status: 'error', error: message })}\n`);
-  process.stderr.write(`AccessRecheck: ${message}\n`);
+  process.stderr.write(`Access-Recheck: ${message}\n`);
   process.exitCode = interruptedCode || 2;
 } finally {
   process.removeListener('SIGINT', interrupt);

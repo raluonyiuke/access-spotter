@@ -1,13 +1,14 @@
 {
-  "name": "accessrecheck",
-  "version": "0.1.0",
+  "name": "access-recheck",
+  "version": "0.1.1",
   "private": true,
   "description": "Scan website accessibility at desktop and narrow widths, get fix guidance, and identify checks needing human review.",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "accessrecheck": "dist/cli.js",
-    "arc": "dist/cli.js"
+    "access-recheck": "dist/cli.js",
+    "arc": "dist/cli.js",
+    "accessrecheck": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -24,10 +25,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raluonyiuke/accessrecheck.git"
+    "url": "git+https://github.com/raluonyiuke/access-recheck.git"
   },
   "bugs": {
-    "url": "https://github.com/raluonyiuke/accessrecheck/issues"
+    "url": "https://github.com/raluonyiuke/access-recheck/issues"
   },
   "scripts": {
     "build": "node scripts/clean.mjs && tsc",

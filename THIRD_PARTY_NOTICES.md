@@ -1,6 +1,6 @@
 # Third-party dependencies
 
-Original AccessRecheck code is MIT-licensed. Dependencies are separately licensed; the project's MIT license does not replace theirs.
+Original Access-Recheck code is MIT-licensed. Dependencies are separately licensed; the project's MIT license does not replace theirs.
 
 | Direct dependency | License | Source |
 | --- | --- | --- |

@@ -1,31 +1,33 @@
-# AccessRecheck
+# Access-Recheck
 
 Check website accessibility, record human review, and catch regressions before they ship.
 
 An accessibility QA CLI for developers and people building websites. Scan a website or local development server, find automatically detectable barriers, and get element selectors and guidance for fixing them.
 
-**Available now: single-page automated scans.** Version 0.1.0 scans desktop and narrow viewports, prints actionable findings, saves JSON evidence, and lists checks that need human evaluation. Interactive manual-review recording and regression baselines are planned. The tagline describes the broader project goal.
+**Available now: single-page automated scans.** Version 0.1.1 scans desktop and narrow viewports, prints actionable findings, saves JSON evidence, and lists checks that need human evaluation. Interactive manual-review recording and regression baselines are planned. The tagline describes the broader project goal.
 
 ## Install and scan
 
 Requires Node.js 22 or newer, npm, and a Playwright-supported operating system. Install the ready-built package from GitHub Releases, then scan your site:
 
 ```sh
-npm install -g https://github.com/raluonyiuke/accessrecheck/releases/download/v0.1.0/accessrecheck-0.1.0.tgz
+npm install -g https://github.com/raluonyiuke/access-recheck/releases/download/v0.1.1/access-recheck-0.1.1.tgz
 arc scan http://localhost:3000
 ```
 
-Replace the URL with your local development server or a website you are authorized to test. `accessrecheck` and `arc` run the same tool. If another tool already uses `arc`, use `accessrecheck`.
+Replace the URL with your local development server or a website you are authorized to test. `access-recheck` and `arc` run the same tool. The older `accessrecheck` command is retained as an alias. If another tool already uses `arc`, use `access-recheck`.
 
 No cloning, Git, TypeScript, or source build is required. The first scan downloads Chromium through Playwright, about 200 MB, if it is missing. Package dependencies come from the npm registry. Download and diagnostic messages go to stderr.
+
+If you installed 0.1.0, first run `npm uninstall -g accessrecheck` to remove the old package and avoid command conflicts, then install the new package above.
 
 To run without a global installation:
 
 ```sh
-npx --yes --package=https://github.com/raluonyiuke/accessrecheck/releases/download/v0.1.0/accessrecheck-0.1.0.tgz accessrecheck scan http://localhost:3000
+npx --yes --package=https://github.com/raluonyiuke/access-recheck/releases/download/v0.1.1/access-recheck-0.1.1.tgz access-recheck scan http://localhost:3000
 ```
 
-For CI or an explicit setup step, run `arc setup` in advance and scan with `--no-install`. On Linux, Chromium may require system libraries; follow [Playwright's system dependency instructions](https://playwright.dev/docs/browsers#install-system-dependencies). AccessRecheck never installs OS packages or elevates privileges. The release includes SHA-256 checksums. This package is distributed through GitHub Releases and is not yet published to the npm registry.
+For CI or an explicit setup step, run `arc setup` in advance and scan with `--no-install`. On Linux, Chromium may require system libraries; follow [Playwright's system dependency instructions](https://playwright.dev/docs/browsers#install-system-dependencies). Access-Recheck never installs OS packages or elevates privileges. The release includes SHA-256 checksums. This package is distributed through GitHub Releases and is not yet published to the npm registry.
 
 ## What you get
 
@@ -67,15 +69,15 @@ Execution errors take precedence over findings. SIGINT cancels with code 130; SI
 
 ## Why this project exists
 
-AccessRecheck was created to make accessibility a repeatable part of building websites: find barriers, understand the fix, check the result, and keep checking as the site changes. The goal is to help developers and website builders make pages people can use, with findings they can act on and a clear record of what still needs attention.
+Access-Recheck was created to make accessibility a repeatable part of building websites: find barriers, understand the fix, check the result, and keep checking as the site changes. The goal is to help developers and website builders make pages people can use, with findings they can act on and a clear record of what still needs attention.
 
 **Common barriers are widespread on popular home pages.** In its February 2026 automated evaluation of one million popular home pages, WebAIM detected WCAG failures on 95.9% of them, averaging 56.1 detected errors per page. Low contrast text, missing image alternatives, missing form labels, empty links, empty buttons, and missing page language accounted for 96% of detected errors. This measures a subset of issues on sampled home pages, not every page or every accessibility barrier. [Source: WebAIM Million 2026](https://webaim.org/projects/million/).
 
 **Checking during development makes the work easier to address.** W3C recommends evaluating accessibility early and throughout development. It also recommends regular reviews as content changes and checks within the publishing process. That is consistent with the workflow we want to build: local checks, understandable fix guidance, and rechecks in pull requests. [Sources: W3C evaluation overview](https://www.w3.org/WAI/test-evaluate/), [W3C guidance on sustaining accessibility](https://www.w3.org/WAI/planning-and-managing/sustain/).
 
-**A clean automated scan leaves questions unanswered.** W3C says tools alone cannot establish accessibility; knowledgeable human evaluation is required. Involving people with disabilities can also reveal usability issues that conformance evaluation alone misses. AccessRecheck's planned manual checklist will help record human review, while keeping untested and uncertain results visible. It will support, rather than replace, expert evaluation and testing with disabled users. [Sources: W3C evaluation overview](https://www.w3.org/WAI/test-evaluate/), [involving users in evaluation](https://www.w3.org/WAI/test-evaluate/involving-users/).
+**A clean automated scan leaves questions unanswered.** W3C says tools alone cannot establish accessibility; knowledgeable human evaluation is required. Involving people with disabilities can also reveal usability issues that conformance evaluation alone misses. Access-Recheck's planned manual checklist will help record human review, while keeping untested and uncertain results visible. It will support, rather than replace, expert evaluation and testing with disabled users. [Sources: W3C evaluation overview](https://www.w3.org/WAI/test-evaluate/), [involving users in evaluation](https://www.w3.org/WAI/test-evaluate/involving-users/).
 
-AccessRecheck aims to offer another open-source option that brings actionable findings, human review, and regression tracking together for website builders. Existing tools already support these practices: Playwright documents snapshotting fingerprints of known violations, and a11y-loop combines browser audits, finding comparisons, CI, and a manual-review checklist. AccessRecheck does not claim to have invented these techniques or to offer capabilities that have not been implemented. [Sources: Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing), [a11y-loop](https://github.com/ChanMeng666/a11y-loop).
+Access-Recheck aims to offer another open-source option that brings actionable findings, human review, and regression tracking together for website builders. Existing tools already support these practices: Playwright documents snapshotting fingerprints of known violations, and a11y-loop combines browser audits, finding comparisons, CI, and a manual-review checklist. Access-Recheck does not claim to have invented these techniques or to offer capabilities that have not been implemented. [Sources: Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing), [a11y-loop](https://github.com/ChanMeng666/a11y-loop).
 
 See the [research notes](docs/RESEARCH.md) for the evidence, limitations, and implications for the planned product, and the [landscape comparison](docs/LANDSCAPE.md) for existing options.
 
@@ -112,15 +114,15 @@ Only a single loaded state of one page is scanned. HTTPS certificates must be va
 
 The tool does not click controls or submit forms, but visiting a URL runs the site's JavaScript and network requests. Use authorized targets and appropriate test data. Queries, fragments, and credentials in the requested and final URLs are omitted from results, and raw element HTML is not collected. Selectors, page titles, and guidance can still contain sensitive content; review evidence before sharing it.
 
-AccessRecheck does not certify ADA compliance. Automated checks cannot establish WCAG conformance on their own; human evaluation is required. A completed scan describes only the tested scope and evidence, not a legal determination. Legal applicability depends on the site and its obligations; this project does not provide legal advice.
+Access-Recheck does not certify ADA compliance. Automated checks cannot establish WCAG conformance on their own; human evaluation is required. A completed scan describes only the tested scope and evidence, not a legal determination. Legal applicability depends on the site and its obligations; this project does not provide legal advice.
 
 ## Development
 
 For contributors working from a source checkout (requires Git):
 
 ```sh
-git clone https://github.com/raluonyiuke/accessrecheck.git
-cd accessrecheck
+git clone https://github.com/raluonyiuke/access-recheck.git
+cd access-recheck
 npm ci
 npm run setup
 npm run check
@@ -135,8 +137,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CHANGEL
 
 ## Related projects
 
-[Pa11y](https://github.com/pa11y/pa11y) and [Pa11y CI](https://github.com/pa11y/pa11y-ci) provide automated testing and CI workflows. [Playwright with axe](https://playwright.dev/docs/accessibility-testing) supports checks within browser tests and snapshots for known issues. [Accessibility Insights for Web](https://accessibilityinsights.io/docs/web/overview/) offers automated and guided manual assessment. [a11y-loop](https://github.com/ChanMeng666/a11y-loop) documents browser audits, finding comparisons, CI, and a manual-review checklist. These overlap with AccessRecheck's plans. See the [landscape comparison](docs/LANDSCAPE.md) for scope and reuse considerations.
+[Pa11y](https://github.com/pa11y/pa11y) and [Pa11y CI](https://github.com/pa11y/pa11y-ci) provide automated testing and CI workflows. [Playwright with axe](https://playwright.dev/docs/accessibility-testing) supports checks within browser tests and snapshots for known issues. [Accessibility Insights for Web](https://accessibilityinsights.io/docs/web/overview/) offers automated and guided manual assessment. [a11y-loop](https://github.com/ChanMeng666/a11y-loop) documents browser audits, finding comparisons, CI, and a manual-review checklist. These overlap with Access-Recheck's plans. See the [landscape comparison](docs/LANDSCAPE.md) for scope and reuse considerations.
 
 ## License
 
-MIT for original AccessRecheck code. Dependencies retain their own licenses, including MPL-2.0 for axe-core. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT for original Access-Recheck code. Dependencies retain their own licenses, including MPL-2.0 for axe-core. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

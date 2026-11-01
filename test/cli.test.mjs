@@ -32,6 +32,6 @@ test('bad arguments never return a clean result', () => {
     const result = run(...args);
     assert.equal(result.status, 2);
     assert.equal(result.stdout, '');
-    assert.match(result.stderr, /AccessRecheck:/);
+    assert.match(result.stderr, /Access-Recheck:/);
   }
 });
