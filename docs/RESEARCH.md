@@ -1,6 +1,6 @@
 # Research behind AccessRecheck
 
-Reviewed 2026-10-31. This note supports the README's project rationale. It distinguishes published findings from our product decisions. AccessRecheck remains a help/version-only scaffold; the capabilities discussed below are planned.
+Reviewed 2026-10-31. This note supports the README's project rationale. It distinguishes published findings from our product decisions. The initial release scans one page at two widths and saves JSON findings. Interactive human-review recording, complete criterion coverage, and regression baselines discussed below remain planned.
 
 ## Research approach
 
@@ -30,7 +30,7 @@ The [axe-core documentation](https://github.com/dequelabs/axe-core) describes un
 
 Product decision: preserve needs-review and untested states, document coverage, and record human decisions with their scope. A guided checklist is not equivalent to screen-reader expertise or user research. Do not promise a fixed percentage of barriers that automation will detect across different sites.
 
-Jonathan Robert Pool's 2023 study, [Accessibility Metatesting: Comparing Nine Testing Tools](https://arxiv.org/abs/2304.07591), compared tools on 121 pages of interest to CVS Health and reported that their findings were complementary. That limited sample and older tool versions do not establish a current ranking or universal detection rate. It reinforces the need to describe an engine's coverage honestly; choosing axe-core does not make other engines redundant. Adding more engines is not part of the current scaffold scope.
+Jonathan Robert Pool's 2023 study, [Accessibility Metatesting: Comparing Nine Testing Tools](https://arxiv.org/abs/2304.07591), compared tools on 121 pages of interest to CVS Health and reported that their findings were complementary. That limited sample and older tool versions do not establish a current ranking or universal detection rate. It reinforces the need to describe an engine's coverage honestly; choosing axe-core does not make other engines redundant. Adding more engines is not part of the initial release scope.
 
 ## 4. Regression comparisons require care
 

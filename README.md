@@ -2,9 +2,68 @@
 
 Check website accessibility, record human review, and catch regressions before they ship.
 
-An accessibility QA CLI for developers and people building websites. AccessRecheck is being built to fit the work between changing a page and shipping it: find barriers, understand what to fix, check the result, and keep fixed issues from returning.
+An accessibility QA CLI for developers and people building websites. Scan a website or local development server, find automatically detectable barriers, and get element selectors and guidance for fixing them.
 
-**Status: Phase 1 scaffold.** The CLI currently provides help and version information only. URL scanning, reports, manual checklists, and baselines are planned; they do not work yet. This project is not published to npm.
+**Available now: single-page automated scans.** Version 0.1.0 scans desktop and narrow viewports, prints actionable findings, saves JSON evidence, and lists checks that need human evaluation. Interactive manual-review recording and regression baselines are planned. The tagline describes the broader project goal.
+
+## Install and scan
+
+Requires Node.js 22 or newer, npm, and a Playwright-supported operating system. Install the ready-built package from GitHub Releases, then scan your site:
+
+```sh
+npm install -g https://github.com/raluonyiuke/accessrecheck/releases/download/v0.1.0/accessrecheck-0.1.0.tgz
+arc scan http://localhost:3000
+```
+
+Replace the URL with your local development server or a website you are authorized to test. `accessrecheck` and `arc` run the same tool. If another tool already uses `arc`, use `accessrecheck`.
+
+No cloning, Git, TypeScript, or source build is required. The first scan downloads Chromium through Playwright, about 200 MB, if it is missing. Package dependencies come from the npm registry. Download and diagnostic messages go to stderr.
+
+To run without a global installation:
+
+```sh
+npx --yes --package=https://github.com/raluonyiuke/accessrecheck/releases/download/v0.1.0/accessrecheck-0.1.0.tgz accessrecheck scan http://localhost:3000
+```
+
+For CI or an explicit setup step, run `arc setup` in advance and scan with `--no-install`. On Linux, Chromium may require system libraries; follow [Playwright's system dependency instructions](https://playwright.dev/docs/browsers#install-system-dependencies). AccessRecheck never installs OS packages or elevates privileges. The release includes SHA-256 checksums. This package is distributed through GitHub Releases and is not yet published to the npm registry.
+
+## What you get
+
+- axe-core checks at **1280 x 800** and **390 x 844**, using fresh browser contexts. The narrow viewport is not mobile device emulation.
+- Failures with rule IDs, WCAG criterion tags, affected selectors, fix guidance, and reference links.
+- Uncertain axe findings labeled **needs human review**, plus a list of untested human checks.
+- JSON output and evidence files suitable for scripts and issue triage.
+
+The same issue can appear in both viewports. Summary counts are affected-node occurrences per viewport, not deduplicated site-wide issues. Automated rule passes do not establish that a complete WCAG criterion passes.
+
+```sh
+arc scan https://example.com --output scan.json
+arc scan http://localhost:3000 --json
+arc scan http://localhost:3000 --wcag 2.1 --wait-for main --timeout 90000
+arc --help
+```
+
+| Option | Behavior |
+| --- | --- |
+| `--wcag 2.0`, `2.1`, or `2.2` | Select cumulative axe A/AA tags; default 2.2. This is not a complete criterion inventory. |
+| `--json` | Write one JSON result to stdout, including execution errors. |
+| `--output path` | Save completed JSON results on exit 0 or 1. Existing files are replaced atomically; the parent directory must exist. |
+| `--install-timeout ms` | Browser setup deadline in milliseconds; default 600000. Also accepted by `arc setup`. |
+| `--timeout ms` | Total scan deadline across both viewports; default 60000, excluding browser installation. |
+| `--wait ms` | Wait after page load in each viewport; default 1000. Later-rendered content can be missed. |
+| `--wait-for css` | Wait for a visible selector in each viewport before the settle delay and scan. A selector hidden at 390px will time out. |
+| `--no-install` | Fail clearly if Chromium is missing, without downloading it. |
+| `--allow-redirect` | Allow a final URL on another origin. Review the final URL and title to ensure the intended page was scanned. Navigation after the initial page load is rejected even with this option. |
+
+Execution errors produce no completed report. If `--output` already exists, an unsuccessful run leaves the old file unchanged; check the exit code and report timestamps before using it. A browser download has a separate ten-minute default deadline, configurable with `--install-timeout` up to one hour.
+
+| Exit code | Meaning |
+| --- | --- |
+| `0` | No automated violations in the scanned scope. Human review is still required. |
+| `1` | Automated violations found. |
+| `2` | Invalid input, failed navigation, timeout, browser problem, or output-file error. |
+
+Execution errors take precedence over findings. SIGINT cancels with code 130; SIGTERM cancels with code 143 on platforms that deliver those signals. Invalid or unsupported inputs never count as a successful scan.
 
 ## Why this project exists
 
@@ -16,7 +75,7 @@ AccessRecheck was created to make accessibility a repeatable part of building we
 
 **A clean automated scan leaves questions unanswered.** W3C says tools alone cannot establish accessibility; knowledgeable human evaluation is required. Involving people with disabilities can also reveal usability issues that conformance evaluation alone misses. AccessRecheck's planned manual checklist will help record human review, while keeping untested and uncertain results visible. It will support, rather than replace, expert evaluation and testing with disabled users. [Sources: W3C evaluation overview](https://www.w3.org/WAI/test-evaluate/), [involving users in evaluation](https://www.w3.org/WAI/test-evaluate/involving-users/).
 
-AccessRecheck aims to offer another open-source option that brings actionable findings, human review, and regression tracking together for website builders. Existing tools already support these practices: Playwright documents snapshotting fingerprints of known violations, and a11y-loop combines browser audits, finding comparisons, CI, and a manual-review checklist. AccessRecheck does not claim to have invented these techniques or to offer capabilities its scaffold has not implemented. [Sources: Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing), [a11y-loop](https://github.com/ChanMeng666/a11y-loop).
+AccessRecheck aims to offer another open-source option that brings actionable findings, human review, and regression tracking together for website builders. Existing tools already support these practices: Playwright documents snapshotting fingerprints of known violations, and a11y-loop combines browser audits, finding comparisons, CI, and a manual-review checklist. AccessRecheck does not claim to have invented these techniques or to offer capabilities that have not been implemented. [Sources: Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing), [a11y-loop](https://github.com/ChanMeng666/a11y-loop).
 
 See the [research notes](docs/RESEARCH.md) for the evidence, limitations, and implications for the planned product, and the [landscape comparison](docs/LANDSCAPE.md) for existing options.
 
@@ -26,67 +85,51 @@ See the [research notes](docs/RESEARCH.md) for the evidence, limitations, and im
 - Freelancers and agencies checking client sites before launch and after changes.
 - People building sites with a CMS or website builder who want plain-language findings and a checklist they can follow or share with a developer.
 
-The current scaffold requires Git, a terminal, Node.js, and npm. The planned CLI will check browser-accessible pages, including local development servers and authorized staging previews. People using a website builder will need a reachable preview or published URL; a builder-specific integration is not currently planned.
+Using the tool requires a terminal, Node.js, and npm. It checks browser-accessible HTML pages, including local development servers and public staging previews. People using a website builder need a reachable preview or published URL. There is no sign-in automation or builder-specific integration. A login page returning HTTP 200 can still be scanned, so check the final URL and title before interpreting results.
 
-## Intended workflow
+## Your workflow
 
-The following workflow is planned, not available in the scaffold:
+1. Run `arc scan <url>` against a page you are building.
+2. Use each finding's selector, guidance, and reference link to investigate and fix it.
+3. Rerun the scan after changes, then do the listed keyboard, content, zoom, and screen-reader checks.
+4. Save JSON evidence with `--output` when sharing findings with teammates.
 
-1. Point AccessRecheck at a page on your local development server or a staging site you are authorized to test.
-2. Get findings with the affected element, the reason it matters, and guidance on what to fix.
-3. Make the change, rerun the checks, and complete the guided keyboard and other human checks that automation cannot settle.
-4. Save a baseline and run checks in pull requests so new failures are caught while existing failures stay visible.
+Interactive recording of human decisions, shareable HTML reports, crawling, and baseline comparisons are planned. The current release does not automatically judge whether a fix is a regression or remember earlier runs.
 
-The planned HTML report will make it easier to share findings with teammates and clients who do not use the terminal.
+## Further milestones
 
-## Try the scaffold
+- Configured URL lists and opt-in bounded same-origin crawling.
+- Complete version-specific WCAG criterion inventories and explicit coverage beyond the automated rule tags.
+- Dedicated reflow, keyboard interaction, and additional rendered contrast checks.
+- A guided manual checklist and a readable HTML report with evidence and fix guidance.
+- Regression baselines that keep known failures visible and fail CI on new failures.
 
-Requires Git, Node.js 22 or newer, and npm.
+The default automated profile is WCAG 2.2 A/AA. Selecting a profile will not determine which standard legally applies. A clean automated scan must never automatically promote an entire criterion to passed. See the [roadmap](docs/ROADMAP.md) for milestones and acceptance criteria.
+
+## Limits
+
+Only a single loaded state of one page is scanned. HTTPS certificates must be valid; self-signed development certificates are not bypassed. Iframe contents, expanded menus, dialogs, authenticated journeys, and later-rendered content may be untested. This release has no keyboard interaction engine, dedicated 320px reflow test, full criterion inventory, screenshots, or baseline. WCAG 4.1.1 is explicitly listed for human review in the 2.0 and 2.1 profiles, not silently passed.
+
+The tool does not click controls or submit forms, but visiting a URL runs the site's JavaScript and network requests. Use authorized targets and appropriate test data. Queries, fragments, and credentials in the requested and final URLs are omitted from results, and raw element HTML is not collected. Selectors, page titles, and guidance can still contain sensitive content; review evidence before sharing it.
+
+AccessRecheck does not certify ADA compliance. Automated checks cannot establish WCAG conformance on their own; human evaluation is required. A completed scan describes only the tested scope and evidence, not a legal determination. Legal applicability depends on the site and its obligations; this project does not provide legal advice.
+
+## Development
+
+For contributors working from a source checkout (requires Git):
 
 ```sh
 git clone https://github.com/raluonyiuke/accessrecheck.git
 cd accessrecheck
 npm ci
-npm run build
-node dist/cli.js --help
-node dist/cli.js --version
-```
-
-To install the command locally from this checkout:
-
-```sh
-npm install -g .
-accessrecheck --help
-arc --help
-```
-
-Both `accessrecheck` and the short alias `arc` run the same CLI. If another installed tool already uses `arc`, use `accessrecheck` to avoid ambiguity.
-
-A URL or unsupported argument exits with code 2 because scanning is not implemented. Help and version commands exit with code 0; this does not indicate an accessibility result.
-
-## Planned v1
-
-- Single URLs, configured URL lists, and opt-in bounded same-origin crawling.
-- axe-core scans at desktop and mobile widths, mapped to WCAG 2.0, 2.1, or 2.2 at levels A and AA.
-- Reflow, keyboard interaction, and rendered contrast checks, with uncertain findings sent to human review.
-- A guided manual checklist and a readable HTML report with evidence and fix guidance.
-- Regression baselines that keep known failures visible and fail CI on new failures.
-
-The intended default is WCAG 2.2 AA. Selecting a profile will not determine which standard legally applies. A clean automated scan must never automatically promote an entire criterion to passed. See the [roadmap](docs/ROADMAP.md) for milestones and acceptance criteria.
-
-## Limits
-
-AccessRecheck does not certify ADA compliance. Automated checks cannot establish WCAG conformance on their own; human evaluation is required. Any future passing result will describe only the tested scope and evidence, not a legal determination. Legal applicability depends on the site and its obligations; this project does not provide legal advice.
-
-## Development
-
-```sh
-npm ci
+npm run setup
 npm run check
 npm run test:package
 ```
 
-The CLI is built with TypeScript. axe-core and Playwright are installed for future scan implementation. Browser installation will be documented when scans are implemented; no browser download is needed for the scaffold checks. GitHub Actions runs type checking, CLI tests, and package installation checks on Node.js 22 and 24. The package check installs a temporary tarball, exercises both commands, and checks that README-linked documentation is included. It requires npm registry access for dependencies and leaves global commands untouched.
+The CLI uses TypeScript, axe-core, and Playwright. Runtime dependency versions are pinned so the installed engine and Chromium match the tested release. GitHub Actions runs type checks, real Chromium fixture scans, and package installation checks on Node.js 22 and 24 on Linux and Windows. Local macOS checks run the same suite. The package test installs a built tarball without development tools, exercises both installed commands against fixtures, and checks that README-linked documentation is included. It requires npm registry access and leaves global commands untouched.
+
+To build a release tarball and its SHA-256 checksum without publishing, run `npm run release:pack`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [CHANGELOG.md](CHANGELOG.md).
 

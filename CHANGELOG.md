@@ -1,16 +1,14 @@
 # Changelog
 
-## Unreleased - 0.1.0 scaffold
+## 0.1.0
 
-- Add a sourced project rationale, research notes, and an expanded comparison of existing accessibility tools.
-- Position AccessRecheck for developers and website builders, with a planned local development and pull request workflow.
-- Include linked documentation in the package and verify both installed CLI commands in CI.
-- Align Node.js type definitions with the supported Node 22 minimum.
-- Renamed the project to AccessRecheck, with `accessrecheck` and `arc` CLI commands.
+- Ship an installable single-page accessibility scanner through GitHub Releases.
+- Run axe-core at desktop and narrow widths with cumulative WCAG 2.0, 2.1, or 2.2 A/AA tags.
+- Print affected selectors, guidance, criterion tags, and references; preserve uncertain results for human review.
+- Add JSON stdout and atomic JSON evidence files, bounded scan timeouts, readiness controls, and explicit execution errors.
+- Set up Chromium automatically on first use or explicitly through `arc setup`; support offline scanning with `--no-install`.
+- Test real browser behavior against broken and clean local fixtures, and test both installed CLI commands on Linux and Windows CI.
+- Pin runtime dependencies and clean build output before packaging.
+- Include the developer and website-builder documentation, sourced project rationale, research notes, and MIT license.
 
-- TypeScript Node CLI with help and version output.
-- axe-core and Playwright dependencies for future scan implementation.
-- CLI tests and Node.js 22/24 CI.
-- Public project documentation, phased roadmap, MIT license, and dependency notices.
-
-Scanning, reports, manual review, and regression baselines are not implemented. No npm release has been published.
+No HTML reports, screenshots, crawling, interactive human-review recording, or regression baselines are included. No npm-registry publication has been made.

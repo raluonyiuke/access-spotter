@@ -11,7 +11,8 @@ test('help explains the actual development status and limitations', () => {
   for (const args of [[], ['--help'], ['-h']]) {
     const result = run(...args);
     assert.equal(result.status, 0);
-    assert.match(result.stdout, /Scanning is not implemented/);
+    assert.match(result.stdout, /arc scan <url>/);
+    assert.match(result.stdout, /human review still required/);
     assert.match(result.stdout, /does not certify ADA compliance/);
     assert.equal(result.stderr, '');
   }
@@ -26,11 +27,11 @@ test('version matches the package metadata', () => {
   }
 });
 
-test('scan attempts and unsupported arguments never return a clean result', () => {
-  for (const args of [['https://example.com'], ['--unknown'], ['--help', 'https://example.com'], ['--version', '--unknown']]) {
+test('bad arguments never return a clean result', () => {
+  for (const args of [['scan'], ['example.com'], ['--unknown'], ['--help', 'https://example.com'], ['--version', '--unknown'], ['scan', 'https://example.com', '--wcag', '3.0'], ['scan', 'https://example.com', '--timeout', '-1']]) {
     const result = run(...args);
     assert.equal(result.status, 2);
     assert.equal(result.stdout, '');
-    assert.match(result.stderr, /not implemented yet/);
+    assert.match(result.stderr, /AccessRecheck:/);
   }
 });
