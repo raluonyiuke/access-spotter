@@ -35,3 +35,14 @@ test('bad arguments never return a clean result', () => {
     assert.match(result.stderr, /Access-Spotter:/);
   }
 });
+
+test('numeric options reach the range validator rather than failing only in argument parsing', () => {
+  for (const [args, option] of [
+    [['--timeout=-1'], '--timeout'], [['--timeout', '50'], '--timeout'],
+    [['--wait', 'abc'], '--wait'], [['--install-timeout', '0'], '--install-timeout'],
+  ]) {
+    const result = run('scan', 'http://localhost:1', ...args);
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, new RegExp(`${option} must be an integer`));
+  }
+});

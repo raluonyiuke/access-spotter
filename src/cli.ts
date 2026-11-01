@@ -3,17 +3,18 @@ import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { scan, validateUrl } from './scan.js';
 import { installBrowser } from './browser.js';
-import { renderReport, safeText, writeReport } from './output.js';
-import type { WcagVersion } from './model.js';
+import { renderReport, safeText, validateOutputPath, writeReport } from './output.js';
+import type { ScanOptions, WcagVersion } from './model.js';
 
 const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
 const help = `Access-Spotter
 Find accessibility issues on new and existing websites.
 For developers and people building websites.
 
-Usage: arc scan <url> [options]
+Usage: access-spotter scan <url> [options]
        access-spotter <url> [options]
-       arc setup
+       arc scan <url> [options]
+       access-spotter setup
 
 Options:
   -h, --help           Show this help
@@ -26,10 +27,10 @@ Options:
   --wait <ms>         Settle time after each page load (default 1000)
   --wait-for <css>    Wait for a visible selector before scanning each viewport
   --no-install        Do not auto-download a missing Chromium browser
-  --allow-redirect    Allow navigation to a different origin
+  --allow-redirect    Accept results from another origin (redirects are always followed)
 
 Scans one page at 1280 x 800 and 390 x 844. Missing Chromium downloads on first
-use (about 200 MB); arc setup installs it in advance. Download progress goes to stderr.
+use (about 200 MB); access-spotter setup installs it in advance. Download progress goes to stderr.
 No crawling, interactive manual-review recording, HTML reports, or baselines yet.
 
 Exit codes: 0 = no automated violations (human review still required),
@@ -67,22 +68,24 @@ try {
   } else if (!positionals.length && !Object.keys(values).length) {
     process.stdout.write(help);
   } else if (positionals[0] === 'setup') {
-    if (positionals.length !== 1 || Object.keys(values).some(key => key !== 'install-timeout')) throw new Error('Usage: arc setup [--install-timeout <ms>]');
+    if (positionals.length !== 1 || Object.keys(values).some(key => key !== 'install-timeout')) throw new Error('Usage: access-spotter setup [--install-timeout <ms>]');
     await installBrowser(integer(values['install-timeout'], 600_000, '--install-timeout', 100, 3_600_000), cancellation.signal);
-    process.stdout.write('Chromium is ready. Run arc scan <url>.\n');
+    process.stdout.write('Chromium is ready. Run access-spotter scan <url>.\n');
   } else {
     const urls = positionals[0] === 'scan' ? positionals.slice(1) : positionals;
-    if (urls.length !== 1) throw new Error('Usage: arc scan <http:// or https:// URL>. Run arc --help for options.');
+    if (urls.length !== 1) throw new Error('Usage: access-spotter scan <http:// or https:// URL>. Run access-spotter --help for options.');
     const url = validateUrl(urls[0]!);
     const wcag = values.wcag || '2.2';
     if (!['2.0', '2.1', '2.2'].includes(wcag)) throw new Error('--wcag must be 2.0, 2.1, or 2.2.');
     if (values.output !== undefined && !values.output.trim()) throw new Error('--output requires a nonempty file path.');
     if (values['wait-for'] !== undefined && !values['wait-for'].trim()) throw new Error('--wait-for requires a nonempty CSS selector.');
-    const report = await scan({ url, wcag: wcag as WcagVersion,
+    const options: ScanOptions = { url, wcag: wcag as WcagVersion,
       timeout: integer(values.timeout, 60_000, '--timeout', 100), wait: integer(values.wait, 1000, '--wait', 0),
       install: !values['no-install'], installTimeout: integer(values['install-timeout'], 600_000, '--install-timeout', 100, 3_600_000), allowRedirect: values['allow-redirect'] || false,
       ...(values['wait-for'] ? { waitFor: values['wait-for'] } : {}),
-    }, version, cancellation.signal);
+    };
+    if (values.output) await validateOutputPath(values.output);
+    const report = await scan(options, version, cancellation.signal);
     if (values.output) await writeReport(values.output, report);
     process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderReport(report));
     if (values.output && !json) process.stderr.write(`JSON evidence saved to ${safeText(values.output)}\n`);

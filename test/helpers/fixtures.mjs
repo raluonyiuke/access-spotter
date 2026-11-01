@@ -19,6 +19,7 @@ export async function startFixture() {
     const path = new URL(request.url, 'http://fixture').pathname;
     visits.push({ path, method: request.method });
     if (path === '/slow') return;
+    if (path.startsWith('/browser-stall')) return;
     if (path.startsWith('/browser-mirror')) { response.writeHead(404); response.end('No browser archive'); return; }
     if (path === '/second-fails' && visits.filter(item => item.path === path).length > 1) {
       response.writeHead(500, { 'content-type': 'text/html' }); response.end('Second viewport failed'); return;
@@ -26,9 +27,13 @@ export async function startFixture() {
     if (path === '/redirect') { response.writeHead(302, { location: `${origin.replace('127.0.0.1', 'localhost')}/clean` }); response.end(); return; }
     if (path === '/data') { response.writeHead(200, { 'content-type': 'application/json' }); response.end('{}'); return; }
     if (path === '/missing') { response.writeHead(404, { 'content-type': 'text/html' }); response.end(cleanPage); return; }
-    response.writeHead(200, { 'content-type': 'text/html; charset=utf-8',
+    response.writeHead(200, { 'content-type': path === '/spaced-content-type' ? 'text/html ; charset=utf-8' : 'text/html; charset=utf-8',
       ...(path === '/csp' ? { 'content-security-policy': "script-src 'none'; style-src 'unsafe-inline'" } : {}) });
-    if (path === '/late-redirect') response.end(cleanPage.replace('</main>', `<script>setTimeout(() => location.href = ${JSON.stringify(origin.replace('127.0.0.1', 'localhost') + '/clean')}, 50)</script></main>`));
+    if (path === '/same-document') response.end(cleanPage.replace('</main>', `<script>setTimeout(() => { history.replaceState(null, '', location.pathname); location.hash='ready'; const p=document.createElement('p'); p.id='same-document-ready'; p.textContent='Ready'; document.querySelector('main').append(p); }, 50)</script></main>`));
+    else if (path === '/late-same-origin') response.end(cleanPage.replace('</main>', `<script>setTimeout(() => location.href = '/navigated', 50)</script></main>`));
+    else if (path === '/navigated') response.end(cleanPage.replace('<h1>', '<h1 id="navigated">'));
+    else if (path === '/reload') response.end(cleanPage.replace('</main>', `<script>if (!sessionStorage.getItem('reloaded')) {sessionStorage.setItem('reloaded','1'); setTimeout(() => location.reload(), 50);} else {document.querySelector('h1').id='reloaded';}</script></main>`));
+    else if (path === '/late-redirect') response.end(cleanPage.replace('</main>', `<script>setTimeout(() => location.href = ${JSON.stringify(origin.replace('127.0.0.1', 'localhost') + '/clean')}, 50)</script></main>`));
     else if (path === '/broken') response.end(brokenPage);
     else if (path === '/frame') response.end(cleanPage.replace('</main>', '<iframe title="Embedded form" src="/broken"></iframe></main>'));
     else if (path === '/review') response.end(cleanPage.replace('</main>', '<p style="background-image:linear-gradient(white,black);color:#999">Gradient text requires review</p></main>'));

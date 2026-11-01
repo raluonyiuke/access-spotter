@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3
+
+- Allow same-document query/hash updates without rejecting single-page apps, while still rejecting new documents and origin/path changes during a scan.
+- Accept valid HTML content types with whitespace before parameters.
+- Redact URL credentials and query tokens from installer logs, including URLs split across stream chunks.
+- Reject invalid output destinations before browser setup or navigation.
+- Add precise regression tests for navigation, numeric arguments, HTTP errors, log redaction, and early output validation.
+- Clarify redirects, browser isolation, alias conflicts, JSON results, and setup requirements in the documentation.
+
+
 ## 0.1.2
 
 - Rename the project, package, and primary command to Access-Spotter / access-spotter.

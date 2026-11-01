@@ -72,10 +72,11 @@ test('WCAG profiles include cumulative tags and keep Parsing needs-review in old
 });
 
 test('HTTP errors, non-HTML, and unexpected origins are execution errors', async () => {
-  for (const path of ['/missing', '/data', '/redirect']) {
+  for (const [path, message] of [['/missing', /HTTP 404/], ['/data', /not return an HTML page/], ['/redirect', /different origin/]]) {
     const result = await run(path);
     assert.equal(result.code, 2);
     assert.equal(result.report.status, 'error');
+    assert.match(result.report.error, message);
     assert.ok(!result.report.viewports);
   }
   assert.equal((await run('/redirect', '--allow-redirect')).code, 0);
@@ -97,9 +98,14 @@ test('JSON evidence is written on failures; file errors return 2 without a compl
     const result = await run('/broken', '--output', output);
     assert.equal(result.code, 1);
     assert.deepEqual(JSON.parse(await readFile(output, 'utf8')), result.report);
+    const visits = fixture.visits.length;
     const error = await run('/clean', '--output', dir);
     assert.equal(error.code, 2);
     assert.equal(error.report.status, 'error');
+    assert.equal(fixture.visits.length, visits, 'Invalid output paths should be rejected before navigation');
+    const missingParent = await run('/clean', '--output', join(dir, 'missing', 'scan.json'));
+    assert.equal(missingParent.code, 2);
+    assert.equal(fixture.visits.length, visits);
     assert.deepEqual(await readdir(dir), ['scan.json']);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
@@ -113,7 +119,7 @@ test('CSP does not prevent evaluation and no-install handles a missing browser c
     }), error => {
       assert.equal(error.code, 2);
       assert.equal(JSON.parse(error.stdout).status, 'error');
-      assert.match(error.stderr, /arc setup/);
+      assert.match(error.stderr, /access-spotter setup/);
       return true;
     });
   } finally { await rm(cache, { recursive: true, force: true }); }
@@ -157,16 +163,36 @@ test('a late navigation or second-viewport failure cannot produce a completed re
   }
 });
 
+test('same-document query cleanup and hash changes do not reject a valid page', async () => {
+  const result = await run('/same-document?tracking=example#old', '--wait-for', '#same-document-ready');
+  assert.equal(result.code, 0, result.stderr);
+  assert.equal(result.report.status, 'completed');
+  assert.ok(result.report.viewports.every(viewport => viewport.url.endsWith('/same-document')));
+});
+
+test('same-origin new documents and same-URL reloads are explicitly rejected', async () => {
+  for (const [path, selector] of [['/late-same-origin', '#navigated'], ['/reload', '#reloaded']]) {
+    const result = await run(path, '--wait-for', selector);
+    assert.equal(result.code, 2, result.stderr);
+    assert.match(result.report.error, /navigated again/);
+  }
+});
+
+test('valid HTML media types tolerate whitespace before parameters', async () => {
+  assert.equal((await run('/spaced-content-type')).code, 0);
+});
+
 test('first-use browser installation keeps stdout valid JSON even when the download fails', async () => {
   const cache = await mkdtemp(join(tmpdir(), 'access-spotter-download-'));
   try {
     await assert.rejects(execute(process.execPath, [cli, 'scan', `${fixture.origin}/clean`, '--json'], {
-      env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: cache, PLAYWRIGHT_DOWNLOAD_HOST: `${fixture.origin}/browser-mirror` },
+      env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: cache, PLAYWRIGHT_DOWNLOAD_HOST: `${fixture.origin.replace('http://', 'http://test-user:fake-download-password@')}/browser-mirror` },
       timeout: 30_000, maxBuffer: 4_000_000,
     }), error => {
       assert.equal(error.code, 2);
       assert.equal(JSON.parse(error.stdout).status, 'error');
       assert.match(error.stderr, /Chromium through Playwright/);
+      assert.ok(!error.stderr.includes('fake-download-password'));
       assert.ok(fixture.visits.some(item => item.path.startsWith('/browser-mirror')));
       return true;
     });
@@ -184,4 +210,19 @@ test('default terminal output gives developers a selector, guidance, references,
     assert.equal(error.stderr, '');
     return true;
   });
+});
+
+test('a stalled browser download exits with a clear setup deadline and valid error JSON', async () => {
+  const cache = await mkdtemp(join(tmpdir(), 'access-spotter-install-timeout-'));
+  try {
+    await assert.rejects(execute(process.execPath, [cli, 'scan', `${fixture.origin}/clean`, '--json', '--install-timeout', '1000'], {
+      env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: cache, PLAYWRIGHT_DOWNLOAD_HOST: `${fixture.origin}/browser-stall` },
+      timeout: 10_000, maxBuffer: 4_000_000,
+    }), error => {
+      assert.equal(error.code, 2);
+      assert.equal(JSON.parse(error.stdout).status, 'error');
+      assert.match(error.stderr, /setup exceeded 1000 ms/);
+      return true;
+    });
+  } finally { await rm(cache, { recursive: true, force: true }); }
 });

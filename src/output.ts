@@ -1,6 +1,7 @@
-import { writeFile, rename, unlink } from 'node:fs/promises';
+import { writeFile, rename, unlink, stat, access } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { randomUUID } from 'node:crypto';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
 import type { ScanReport } from './model.js';
 
 export function cleanText(value: string): string {
@@ -20,6 +21,21 @@ export function safeText(value: string): string {
       try { return publicUrl(text); } catch { return '[URL]'; }
     })
     .replace(/\?[^\s"'<>\]\\]+/g, '?[redacted]');
+}
+
+export async function validateOutputPath(filename: string): Promise<void> {
+  const target = resolve(filename);
+  try {
+    await access(dirname(target), constants.W_OK);
+  } catch {
+    throw new Error('The --output parent directory must exist and be writable.');
+  }
+  try {
+    const info = await stat(target);
+    if (!info.isFile()) throw new Error('--output must name a regular file, not a directory or special file.');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+  }
 }
 
 export async function writeReport(filename: string, report: ScanReport): Promise<void> {
@@ -51,7 +67,8 @@ export function renderReport(report: ScanReport): string {
   }
   lines.push(`Result: ${report.summary.decision === 'fail' ? 'automated failures found' : 'needs human review'}.`,
     `${report.summary.violationOccurrences} failure occurrence(s), ${report.summary.reviewOccurrences} automated review occurrence(s).`,
-    'Occurrences count affected nodes separately in each viewport; the same issue may appear twice.', '', 'Human checks still required:');
+    'Failure occurrences count affected nodes per viewport; the same issue may appear twice.',
+    'Review totals count affected nodes, or one occurrence for an inconclusive rule without node details.', '', 'Human checks still required:');
   for (const check of report.manualChecks) lines.push(`  [${check.status}] ${check.instructions}`);
   lines.push('', 'Scope and limitations:', ...report.limitations.map(item => `  ${item}`),
     '', 'Access-Spotter does not certify ADA compliance. No automated scan establishes WCAG conformance.');

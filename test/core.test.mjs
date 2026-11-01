@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { profileTags, validateUrl, abortable } from '../dist/scan.js';
 import { cleanText, publicUrl, safeText } from '../dist/output.js';
+import { relayInstallerOutput } from '../dist/browser.js';
+import { Readable } from 'node:stream';
+import { once } from 'node:events';
 
 test('URL validation allows local HTTP/S and rejects unsupported or credentialed inputs', () => {
   assert.equal(validateUrl('http://localhost:3000'), 'http://localhost:3000/');
@@ -27,4 +30,20 @@ test('abort races reject without waiting for a stalled operation', async () => {
   const pending = abortable(new Promise(() => {}), controller.signal);
   controller.abort(new Error('cancelled'));
   await assert.rejects(pending, /cancelled/);
+});
+
+test('installer log redaction handles credentials and tokens split between chunks', async () => {
+  const source = Readable.from([
+    Buffer.from('Downloading https://test-user:fake-'),
+    Buffer.from('password@example.com/browser?signature=secret-token\n'),
+    Buffer.from('Ready\n'),
+  ]);
+  let output = '';
+  relayInstallerOutput(source, line => { output += line; });
+  await once(source, 'end');
+  assert.ok(!output.includes('fake-password'));
+  assert.ok(!output.includes('test-user'));
+  assert.ok(!output.includes('secret-token'));
+  assert.match(output, /https:\/\/example.com\/browser/);
+  assert.match(output, /Ready/);
 });

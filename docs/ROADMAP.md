@@ -2,7 +2,7 @@
 
 This roadmap defines the public milestones for Access-Spotter. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
 
-## Available in 0.1.2
+## Available in 0.1.3
 
 - Ready-built installable package with `access-spotter` and `arc` commands.
 - A single HTTP(S) URL, including local development servers, at desktop and narrow widths.
@@ -11,6 +11,15 @@ This roadmap defines the public milestones for Access-Spotter. Unchecked items a
 - Real browser fixture tests and installed-package scans in CI.
 
 This release covers parts of phases 2, 3, 4, and 7 below. Full criterion inventories, dedicated reflow/keyboard checks, crawling, HTML reports, interactive review recording, and baselines remain incomplete.
+
+## Next improvement priorities
+
+1. Reproducible evidence: include effective scan settings, browser/tool versions, HTTP status, and observed page errors in reports.
+2. Multi-page checks: accept an explicit URL list before adding broader crawl discovery.
+3. More usable findings: group repeated findings and add a shareable HTML report, while keeping human-review needs explicit.
+4. Regression workflows: establish stable finding identities, baseline comparison, and a ready-to-use GitHub Action.
+
+These are recommendations for later milestones, not capabilities of the current release.
 
 ## Audience and workflow
 
@@ -47,7 +56,8 @@ Build for developers and people building websites, including freelancers, agenci
 - [ ] Self-contained HTML evidence report grouped by criterion, plus terminal summary.
 - [ ] Pass, fail, needs-review, and explicit untested coverage; failure screenshots.
 - [x] Show affected pages and elements, impact, and fix guidance in terminal and JSON output; keep uncertain findings marked for human review.
-- [ ] Treat scanned content as untrusted and escape it in output.
+- [x] Clean control characters in terminal output and serialize JSON safely.
+- [ ] Escape scanned content in the planned HTML report.
 - [ ] axe scan of the report itself, plus keyboard and responsive visual checks.
 
 ## 5. Human review
@@ -73,4 +83,4 @@ Build for developers and people building websites, including freelancers, agenci
 - [ ] First-time user can run a scan and understand the report without reading source.
 - [ ] Document a local development example and a reachable website-builder preview example, with prerequisites and limitations.
 
-Version 0.1.2 is distributed as a built tarball through GitHub Releases. The package remains marked private to prevent accidental npm-registry publication. Later milestones require a separate release.
+Version 0.1.3 is distributed as a built tarball through GitHub Releases. The package remains marked private to prevent accidental npm-registry publication. Later milestones require a separate release.

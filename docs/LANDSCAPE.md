@@ -11,4 +11,4 @@ Reviewed 2026-10-31 against upstream documentation. This is a feature-documentat
 
 Access-Spotter's intended focus is an approachable CLI workflow for developers and website builders, with explicit criterion coverage, recorded human decisions, and visible regression evidence. These are product priorities, not claims of exclusive features. The initial release implements single-page automated scans and JSON output; it does not yet implement the complete workflow described above. See the [research notes](RESEARCH.md) for the rationale and limitations.
 
-Reassess reuse or contribution before implementing the scanner. Do not duplicate a checking engine or infer a market gap from this documentation review. No exhaustive comparison, independent tool evaluation, or usability study has been performed.
+Reassess reuse or contribution before expanding the scanner. Do not duplicate a checking engine or infer a market gap from this documentation review. No exhaustive comparison, independent tool evaluation, or usability study has been performed.

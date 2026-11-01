@@ -1,4 +1,5 @@
 import axe, { type Result } from 'axe-core';
+import { randomUUID } from 'node:crypto';
 import { chromium, type Browser } from 'playwright';
 import { ensureBrowser } from './browser.js';
 import { publicUrl, safeText } from './output.js';
@@ -59,23 +60,28 @@ export async function scan(options: ScanOptions, version: string, cancellation: 
         acceptDownloads: false, serviceWorkers: 'block' }), signal);
       try {
         const page = await abortable(context.newPage(), signal);
-        let navigations = 0;
-        page.on('framenavigated', frame => { if (frame === page.mainFrame()) navigations++; });
         page.on('dialog', dialog => { void dialog.dismiss().catch(() => {}); });
         const response = await abortable(page.goto(url, { waitUntil: 'load', timeout: options.timeout }), signal);
         if (!response || response.status() >= 400) throw new Error(`Page did not load successfully (HTTP ${response?.status() || 'unknown'}). Check the URL and access requirements.`);
-        const contentType = response.headers()['content-type'] || '';
-        if (!/^(text\/html|application\/xhtml\+xml)(;|$)/i.test(contentType)) throw new Error('The URL did not return an HTML page. PDF, JSON, downloads, and other content are not supported.');
+        const contentType = (response.headers()['content-type'] || '').split(';')[0]!.trim().toLowerCase();
+        if (!['text/html', 'application/xhtml+xml'].includes(contentType)) throw new Error('The URL did not return an HTML page. PDF, JSON, downloads, and other content are not supported.');
         const finalUrl = validateUrl(page.url());
-        const initialNavigations = navigations;
-        const requireStablePage = () => {
-          if (navigations !== initialNavigations || page.url() !== finalUrl) throw new Error('The page navigated again after loading. Scan its intended final URL directly so results refer to a stable page.');
-        };
         if (!options.allowRedirect && new URL(finalUrl).origin !== new URL(url).origin) throw new Error(`The page redirected to a different origin: ${publicUrl(finalUrl)}. Use the intended final URL directly, or --allow-redirect if this is expected.`);
+        const initialUrl = new URL(finalUrl);
+        const documentMarker = `__accessSpotterDocument_${randomUUID()}`;
+        await abortable(page.evaluate(key => { Object.defineProperty(window, key, { value: true }); }, documentMarker), signal);
+        const requireStablePage = async () => {
+          // History/query/hash updates retain the document marker; a reload does not.
+          const state = await abortable(page.evaluate(key => ({ sameDocument: Reflect.get(window, key) === true, url: location.href }), documentMarker), signal);
+          const currentUrl = new URL(state.url);
+          if (!state.sameDocument || currentUrl.origin !== initialUrl.origin || currentUrl.pathname !== initialUrl.pathname) {
+            throw new Error('The page navigated again after loading. Scan its intended final URL directly so results refer to a stable page.');
+          }
+        };
         if (options.waitFor) await abortable(page.locator(options.waitFor).first().waitFor({ state: 'visible', timeout: options.timeout }), signal);
         await abortable(page.waitForTimeout(options.wait), signal);
         await abortable(page.evaluate(() => document.fonts.ready.then(() => undefined)), signal);
-        requireStablePage();
+        await requireStablePage();
         await abortable(page.evaluate(axe.source), signal);
         const results = await abortable(page.evaluate(async tags => {
           const engine = (window as unknown as { axe: typeof axe }).axe;
@@ -83,7 +89,7 @@ export async function scan(options: ScanOptions, version: string, cancellation: 
         }, profileTags(options.wcag)), signal);
         const title = safeText(await abortable(page.title(), signal));
         const iframeCount = await abortable(page.locator('iframe, frame').count(), signal);
-        requireStablePage();
+        await requireStablePage();
         viewports.push({ ...viewport, url: publicUrl(finalUrl), title, iframeCount,
           violations: results.violations.map(result => finding(result, 'fail')),
           needsReview: results.incomplete.map(result => finding(result, 'needs-human-review')),

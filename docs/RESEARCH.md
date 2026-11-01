@@ -48,7 +48,7 @@ Product decision: planned reports should explain what was checked, when, with wh
 
 The [landscape comparison](LANDSCAPE.md) summarizes upstream documentation. CI, manual guidance, reporting, and baseline comparisons are established techniques. The relevant question is whether Access-Spotter can make a useful, maintainable workflow for its intended audience, not whether those techniques are new.
 
-Before implementing the scanner, compare the proposed experience against existing options and assess reuse or contribution. A separate CLI should earn its maintenance cost through a validated user need.
+Before expanding the scanner, compare the proposed experience against existing options and assess reuse or contribution. A separate CLI should earn its maintenance cost through a validated user need.
 
 ## What the evidence does not establish
 

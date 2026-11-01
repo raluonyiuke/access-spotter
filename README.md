@@ -4,18 +4,18 @@ Find accessibility issues on new and existing websites.
 
 An accessibility QA CLI for developers and people building websites. Scan a website or local development server, find automatically detectable barriers, and get element selectors and guidance for fixing them.
 
-**Available now: single-page automated scans.** Version 0.1.2 scans desktop and narrow viewports, prints actionable findings, saves JSON evidence, and lists checks that need human evaluation. Interactive manual-review recording and regression baselines are planned.
+**Available now: single-page automated scans.** Version 0.1.3 scans desktop and narrow viewports, prints actionable findings, saves JSON evidence, and lists checks that need human evaluation. Interactive manual-review recording and regression baselines are planned.
 
 ## Install and scan
 
 Requires Node.js 22 or newer, npm, and a Playwright-supported operating system. Install the ready-built package from GitHub Releases, then scan your site:
 
 ```sh
-npm install -g https://github.com/raluonyiuke/access-spotter/releases/download/v0.1.2/access-spotter-0.1.2.tgz
-arc scan http://localhost:3000
+npm install -g https://github.com/raluonyiuke/access-spotter/releases/download/v0.1.3/access-spotter-0.1.3.tgz
+access-spotter scan http://localhost:3000
 ```
 
-Replace the URL with your local development server or a website you are authorized to test. `access-spotter` and `arc` run the same tool. The older `access-recheck` and `accessrecheck` commands are retained as aliases. If another tool already uses `arc`, use `access-spotter`.
+Replace the URL with your local development server or a website you are authorized to test. `access-spotter` and `arc` run the same tool. The older `access-recheck` and `accessrecheck` commands are retained as aliases. The examples use the primary command to avoid confusing it with other tools named `arc`. If another global package already owns any command alias, npm may refuse installation with EEXIST; use the no-global-install command below instead of forcing an overwrite.
 
 No cloning, Git, TypeScript, or source build is required. The first scan downloads Chromium through Playwright, about 200 MB, if it is missing. Package dependencies come from the npm registry. Download and diagnostic messages go to stderr.
 
@@ -24,10 +24,10 @@ If you installed 0.1.0 or 0.1.1, first run `npm uninstall -g accessrecheck acces
 To run without a global installation:
 
 ```sh
-npx --yes --package=https://github.com/raluonyiuke/access-spotter/releases/download/v0.1.2/access-spotter-0.1.2.tgz access-spotter scan http://localhost:3000
+npx --yes --package=https://github.com/raluonyiuke/access-spotter/releases/download/v0.1.3/access-spotter-0.1.3.tgz access-spotter scan http://localhost:3000
 ```
 
-For CI or an explicit setup step, run `arc setup` in advance and scan with `--no-install`. On Linux, Chromium may require system libraries; follow [Playwright's system dependency instructions](https://playwright.dev/docs/browsers#install-system-dependencies). Access-Spotter never installs OS packages or elevates privileges. The release includes SHA-256 checksums. This package is distributed through GitHub Releases and is not yet published to the npm registry.
+For CI or an explicit setup step, run `access-spotter setup` in advance and scan with `--no-install`. On Linux, Chromium may require system libraries; follow [Playwright's system dependency instructions](https://playwright.dev/docs/browsers#install-system-dependencies). Access-Spotter never installs OS packages or elevates privileges. The release includes SHA-256 checksums. Download the tarball and `SHA256SUMS` from the same release into one folder, then verify with `shasum -a 256 -c SHA256SUMS` on macOS or `sha256sum -c SHA256SUMS` on Linux. On Windows, compare `Get-FileHash .\access-spotter-0.1.3.tgz -Algorithm SHA256` with the checksum file. This package is distributed through GitHub Releases and is not yet published to the npm registry.
 
 ## What you get
 
@@ -36,26 +36,39 @@ For CI or an explicit setup step, run `arc setup` in advance and scan with `--no
 - Uncertain axe findings labeled **needs human review**, plus a list of untested human checks.
 - JSON output and evidence files suitable for scripts and issue triage.
 
-The same issue can appear in both viewports. Summary counts are affected-node occurrences per viewport, not deduplicated site-wide issues. Automated rule passes do not establish that a complete WCAG criterion passes.
+Example excerpt from an intentionally broken local fixture:
+
+```text
+  FAIL: image-alt (critical)
+  Images must have alternative text
+  WCAG: 1.1.1
+    Element: img
+```
+
+The full output adds fix guidance, a reference link, other findings, and human checks. Use the selector to find the element in your browser's developer tools, investigate the guidance, make a change, and scan again.
+
+The same issue can appear in both viewports. Failure totals count affected nodes per viewport, not deduplicated site-wide issues. Review totals count affected nodes, or one occurrence for an inconclusive rule without node details. Automated rule passes do not establish that a complete WCAG criterion passes.
 
 ```sh
-arc scan https://example.com --output scan.json
-arc scan http://localhost:3000 --json
-arc scan http://localhost:3000 --wcag 2.1 --wait-for main --timeout 90000
-arc --help
+access-spotter scan https://example.com --output scan.json
+access-spotter scan http://localhost:3000 --json
+access-spotter scan http://localhost:3000 --wcag 2.1 --wait-for main --timeout 90000
+access-spotter --help
 ```
 
 | Option | Behavior |
 | --- | --- |
 | `--wcag 2.0`, `2.1`, or `2.2` | Select cumulative axe A/AA tags; default 2.2. This is not a complete criterion inventory. |
 | `--json` | Write one JSON result to stdout, including execution errors. |
-| `--output path` | Save completed JSON results on exit 0 or 1. Existing files are replaced atomically; the parent directory must exist. |
-| `--install-timeout ms` | Browser setup deadline in milliseconds; default 600000. Also accepted by `arc setup`. |
+| `--output path` | Validate the destination before browser setup or navigation, then save completed JSON results on exit 0 or 1. Existing files are replaced atomically; the parent directory must exist. |
+| `--install-timeout ms` | Browser setup deadline in milliseconds; default 600000. Also accepted by `access-spotter setup`. |
 | `--timeout ms` | Total scan deadline across both viewports; default 60000, excluding browser installation. |
 | `--wait ms` | Wait after page load in each viewport; default 1000. Later-rendered content can be missed. |
 | `--wait-for css` | Wait for a visible selector in each viewport before the settle delay and scan. A selector hidden at 390px will time out. |
 | `--no-install` | Fail clearly if Chromium is missing, without downloading it. |
-| `--allow-redirect` | Allow a final URL on another origin. Review the final URL and title to ensure the intended page was scanned. Navigation after the initial page load is rejected even with this option. |
+| `--allow-redirect` | Accept results when the initial navigation ends on another origin. Redirects are always followed before this check, even without the flag. Later new documents and origin/path changes are rejected; same-document query and hash updates are allowed. |
+
+Redirects from HTTP to HTTPS, a bare host to `www`, or to a different port count as origin changes. Prefer the intended final URL, or accept that result with `--allow-redirect`. Always check the reported URL and title, especially for a sign-in page.
 
 Execution errors produce no completed report. If `--output` already exists, an unsuccessful run leaves the old file unchanged; check the exit code and report timestamps before using it. A browser download has a separate ten-minute default deadline, configurable with `--install-timeout` up to one hour.
 
@@ -66,6 +79,10 @@ Execution errors produce no completed report. If `--output` already exists, an u
 | `2` | Invalid input, failed navigation, timeout, browser problem, or output-file error. |
 
 Execution errors take precedence over findings. SIGINT cancels with code 130; SIGTERM cancels with code 143 on platforms that deliver those signals. Invalid or unsupported inputs never count as a successful scan.
+
+## Using JSON in scripts
+
+`--json` writes one JSON result to stdout; setup progress and diagnostics go to stderr. Both completed and error results have `schemaVersion: 1` and `status`. Completed results contain `summary`, `viewports`, `manualChecks`, and `limitations`. The decision is `fail` or `needs-human-review`; there is no full-site conformance pass. Execution errors contain `status: "error"` and an `error` message. Check the exit code before consuming a saved report.
 
 ## Why this project exists
 
@@ -83,13 +100,13 @@ See the [research notes](docs/RESEARCH.md) for the evidence and limitations behi
 
 - Developers building websites and web apps who want accessibility checks during local development and pull request review.
 - Freelancers and agencies checking client sites before launch and after changes.
-- People building sites with a CMS or website builder who want plain-language findings and a checklist they can follow or share with a developer.
+- People building sites with a CMS or website builder who can share findings with a developer. The current output includes CSS selectors and rule guidance; guided manual-review recording is planned.
 
 Using the tool requires a terminal, Node.js, and npm. It checks browser-accessible HTML pages, including local development servers and public staging previews. People using a website builder need a reachable preview or published URL. There is no sign-in automation or builder-specific integration. A login page returning HTTP 200 can still be scanned, so check the final URL and title before interpreting results.
 
 ## Your workflow
 
-1. Run `arc scan <url>` against a page you are building.
+1. Run `access-spotter scan <url>` against a page you are building.
 2. Use each finding's selector, guidance, and reference link to investigate and fix it.
 3. Rerun the scan after changes, then do the listed keyboard, content, zoom, and screen-reader checks.
 4. Save JSON evidence with `--output` when sharing findings with teammates.
@@ -98,17 +115,13 @@ Interactive recording of human decisions, shareable HTML reports, crawling, and 
 
 ## Further milestones
 
-- Configured URL lists and opt-in bounded same-origin crawling.
-- Complete version-specific WCAG criterion inventories and explicit coverage beyond the automated rule tags.
-- Dedicated reflow, keyboard interaction, and additional rendered contrast checks.
-- A guided manual checklist and a readable HTML report with evidence and fix guidance.
-- Regression baselines that keep known failures visible and fail CI on new failures.
-
-The default automated profile is WCAG 2.2 A/AA. Selecting a profile will not determine which standard legally applies. A clean automated scan must never automatically promote an entire criterion to passed. See the [roadmap](docs/ROADMAP.md) for milestones and acceptance criteria.
+Multi-page scanning, readable HTML reports, guided manual-review recording, and regression baselines are planned. See the [roadmap](docs/ROADMAP.md) for scope and status.
 
 ## Limits
 
 Only a single loaded state of one page is scanned. HTTPS certificates must be valid; self-signed development certificates are not bypassed. Iframe contents, expanded menus, dialogs, authenticated journeys, and later-rendered content may be untested. This release has no keyboard interaction engine, dedicated 320px reflow test, full criterion inventory, screenshots, or baseline. WCAG 4.1.1 is explicitly listed for human review in the 2.0 and 2.1 profiles, not silently passed.
+
+Fresh browser contexts separate session data, but Chromium's OS sandbox is not enabled in the default Playwright launch configuration. See [SECURITY.md](SECURITY.md) for the trust model.
 
 The tool does not click controls or submit forms, but visiting a URL runs the site's JavaScript and network requests. Use authorized targets and appropriate test data. Queries, fragments, and credentials in the requested and final URLs are omitted from results, and raw element HTML is not collected. Selectors, page titles, and guidance can still contain sensitive content; review evidence before sharing it.
 
