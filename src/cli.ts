@@ -7,12 +7,12 @@ import { renderReport, safeText, writeReport } from './output.js';
 import type { WcagVersion } from './model.js';
 
 const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
-const help = `Access-Recheck
-Check website accessibility, record human review, and catch regressions before they ship.
+const help = `Access-Spotter
+Find accessibility issues on new and existing websites.
 For developers and people building websites.
 
 Usage: arc scan <url> [options]
-       access-recheck <url> [options]
+       access-spotter <url> [options]
        arc setup
 
 Options:
@@ -30,12 +30,11 @@ Options:
 
 Scans one page at 1280 x 800 and 390 x 844. Missing Chromium downloads on first
 use (about 200 MB); arc setup installs it in advance. Download progress goes to stderr.
-Human-review recording and regression tracking in the tagline are project goals.
 No crawling, interactive manual-review recording, HTML reports, or baselines yet.
 
 Exit codes: 0 = no automated violations (human review still required),
             1 = automated violations, 2 = input/execution error.
-Access-Recheck does not certify ADA compliance. Automated checks cannot determine
+Access-Spotter does not certify ADA compliance. Automated checks cannot determine
 WCAG conformance on their own; human evaluation is required.
 `;
 
@@ -92,7 +91,7 @@ try {
 } catch (error) {
   const message = safeText(error instanceof Error ? error.message : String(error));
   if (json) process.stdout.write(`${JSON.stringify({ schemaVersion: 1, status: 'error', error: message })}\n`);
-  process.stderr.write(`Access-Recheck: ${message}\n`);
+  process.stderr.write(`Access-Spotter: ${message}\n`);
   process.exitCode = interruptedCode || 2;
 } finally {
   process.removeListener('SIGINT', interrupt);

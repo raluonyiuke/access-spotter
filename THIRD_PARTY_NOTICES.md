@@ -1,6 +1,6 @@
 # Third-party dependencies
 
-Original Access-Recheck code is MIT-licensed. Dependencies are separately licensed; the project's MIT license does not replace theirs.
+Original Access-Spotter code is MIT-licensed. Dependencies are separately licensed; the project's MIT license does not replace theirs.
 
 | Direct dependency | License | Source |
 | --- | --- | --- |

@@ -1,10 +1,10 @@
 # Roadmap
 
-This roadmap defines the public milestones for Access-Recheck. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
+This roadmap defines the public milestones for Access-Spotter. Unchecked items are planned, not supported behavior. Each phase should be reviewed before the next begins.
 
-## Available in 0.1.1
+## Available in 0.1.2
 
-- Ready-built installable package with `access-recheck` and `arc` commands.
+- Ready-built installable package with `access-spotter` and `arc` commands.
 - A single HTTP(S) URL, including local development servers, at desktop and narrow widths.
 - axe-core rules selected by cumulative WCAG 2.0, 2.1, or 2.2 A/AA tags, with incomplete findings preserved for human review.
 - Terminal fix guidance, JSON evidence, browser setup, and execution/finding exit codes.
@@ -73,4 +73,4 @@ Build for developers and people building websites, including freelancers, agenci
 - [ ] First-time user can run a scan and understand the report without reading source.
 - [ ] Document a local development example and a reachable website-builder preview example, with prerequisites and limitations.
 
-Version 0.1.1 is distributed as a built tarball through GitHub Releases. The package remains marked private to prevent accidental npm-registry publication. Later milestones require a separate release.
+Version 0.1.2 is distributed as a built tarball through GitHub Releases. The package remains marked private to prevent accidental npm-registry publication. Later milestones require a separate release.

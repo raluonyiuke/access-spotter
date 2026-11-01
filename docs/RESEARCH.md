@@ -1,14 +1,14 @@
-# Research behind Access-Recheck
+# Research behind Access-Spotter
 
 Reviewed 2026-10-31. This note supports the README's project rationale. It distinguishes published findings from our product decisions. The initial release scans one page at two widths and saves JSON findings. Interactive human-review recording, complete criterion coverage, and regression baselines discussed below remain planned.
 
 ## Research approach
 
-We reviewed the original WebAIM study, a published tool-comparison study, W3C guidance and standards, and upstream documentation for existing testing tools. This was a literature and documentation review, not our own benchmark of the tools or a study of Access-Recheck users. We did not conduct customer interviews, measure remediation time, or test whether this proposed workflow improves accessibility outcomes. Those claims require separate validation.
+We reviewed the original WebAIM study, a published tool-comparison study, W3C guidance and standards, and upstream documentation for existing testing tools. This was a literature and documentation review, not our own benchmark of the tools or a study of Access-Spotter users. We did not conduct customer interviews, measure remediation time, or test whether this proposed workflow improves accessibility outcomes. Those claims require separate validation.
 
 ## 1. Basic barriers remain widespread
 
-The [WebAIM Million 2026](https://webaim.org/projects/million/) evaluated rendered home pages from a popularity-based sample using WAVE. Its 95.9% figure concerns pages with automatically detected WCAG failures; the 56.1 average is detected errors per home page. The six categories listed in the README describe 96% of detected errors, not 96% of all possible barriers. These are WebAIM's findings, not Access-Recheck measurements. Data credit: © WebAIM.
+The [WebAIM Million 2026](https://webaim.org/projects/million/) evaluated rendered home pages from a popularity-based sample using WAVE. Its 95.9% figure concerns pages with automatically detected WCAG failures; the 56.1 average is detected errors per home page. The six categories listed in the README describe 96% of detected errors, not 96% of all possible barriers. These are WebAIM's findings, not Access-Spotter measurements. Data credit: © WebAIM.
 
 Implication for this project: start with understandable, actionable checks for common barriers. These findings do not establish how frequently issues recur on a particular site, which tool is best, or how much work a team will save.
 
@@ -18,7 +18,7 @@ The [W3C evaluation overview](https://www.w3.org/WAI/test-evaluate/) recommends 
 
 [W3C's maintenance guidance](https://www.w3.org/WAI/planning-and-managing/sustain/) explains that changing content can introduce issues and recommends reviews within publishing processes. It explicitly asks teams to consider causes such as changes in a CMS and insufficient training.
 
-Product decision: make local development and pull request checks part of the intended workflow. A baseline should identify new failures while continuing to display known failures. This is our implementation direction, not a W3C endorsement of Access-Recheck or a claim that monitoring solves training and process problems.
+Product decision: make local development and pull request checks part of the intended workflow. A baseline should identify new failures while continuing to display known failures. This is our implementation direction, not a W3C endorsement of Access-Spotter or a claim that monitoring solves training and process problems.
 
 ## 3. Automation and human review answer different questions
 
@@ -46,13 +46,13 @@ Product decision: planned reports should explain what was checked, when, with wh
 
 ## 6. Existing tools already cover much of the workflow
 
-The [landscape comparison](LANDSCAPE.md) summarizes upstream documentation. CI, manual guidance, reporting, and baseline comparisons are established techniques. The relevant question is whether Access-Recheck can make a useful, maintainable workflow for its intended audience, not whether those techniques are new.
+The [landscape comparison](LANDSCAPE.md) summarizes upstream documentation. CI, manual guidance, reporting, and baseline comparisons are established techniques. The relevant question is whether Access-Spotter can make a useful, maintainable workflow for its intended audience, not whether those techniques are new.
 
 Before implementing the scanner, compare the proposed experience against existing options and assess reuse or contribution. A separate CLI should earn its maintenance cost through a validated user need.
 
 ## What the evidence does not establish
 
-- That Access-Recheck improves outcomes, saves a measured amount of time, or is easier than another tool.
+- That Access-Spotter improves outcomes, saves a measured amount of time, or is easier than another tool.
 - That automated results establish complete WCAG conformance, legal compliance, or protection from complaints.
 - That a popular-homepage study describes every website, every user journey, or the needs of all disabled people.
 - That a saved manual review remains valid after changes to content, components, or behavior.

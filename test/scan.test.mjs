@@ -91,7 +91,7 @@ test('total deadline stops a stalled navigation and readiness selector waits for
 });
 
 test('JSON evidence is written on failures; file errors return 2 without a completed result', async () => {
-  const dir = await mkdtemp(join(tmpdir(), 'access-recheck-evidence-'));
+  const dir = await mkdtemp(join(tmpdir(), 'access-spotter-evidence-'));
   try {
     const output = join(dir, 'scan.json');
     const result = await run('/broken', '--output', output);
@@ -106,7 +106,7 @@ test('JSON evidence is written on failures; file errors return 2 without a compl
 
 test('CSP does not prevent evaluation and no-install handles a missing browser clearly', async () => {
   assert.equal((await run('/csp')).code, 0);
-  const cache = await mkdtemp(join(tmpdir(), 'access-recheck-no-browser-'));
+  const cache = await mkdtemp(join(tmpdir(), 'access-spotter-no-browser-'));
   try {
     await assert.rejects(execute(process.execPath, [cli, 'scan', `${fixture.origin}/clean`, '--json', '--no-install'], {
       env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: cache }, timeout: 10_000,
@@ -122,7 +122,7 @@ test('CSP does not prevent evaluation and no-install handles a missing browser c
 for (const [signal, expected] of [['SIGINT', 130], ['SIGTERM', 143]]) {
 test(`${signal} cancels a stalled scan and preserves previous evidence`, { skip: process.platform === 'win32' }, async t => {
   const previousRequests = fixture.visits.filter(item => item.path === '/slow').length;
-  const directory = await mkdtemp(join(tmpdir(), 'access-recheck-cancel-'));
+  const directory = await mkdtemp(join(tmpdir(), 'access-spotter-cancel-'));
   const output = join(directory, 'evidence.json');
   const original = '{"previous":"evidence"}\n';
   const { writeFile } = await import('node:fs/promises');
@@ -158,7 +158,7 @@ test('a late navigation or second-viewport failure cannot produce a completed re
 });
 
 test('first-use browser installation keeps stdout valid JSON even when the download fails', async () => {
-  const cache = await mkdtemp(join(tmpdir(), 'access-recheck-download-'));
+  const cache = await mkdtemp(join(tmpdir(), 'access-spotter-download-'));
   try {
     await assert.rejects(execute(process.execPath, [cli, 'scan', `${fixture.origin}/clean`, '--json'], {
       env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: cache, PLAYWRIGHT_DOWNLOAD_HOST: `${fixture.origin}/browser-mirror` },

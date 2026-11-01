@@ -1,13 +1,14 @@
 {
-  "name": "access-recheck",
-  "version": "0.1.1",
+  "name": "access-spotter",
+  "version": "0.1.2",
   "private": true,
-  "description": "Scan website accessibility at desktop and narrow widths, get fix guidance, and identify checks needing human review.",
+  "description": "Find accessibility issues on new and existing websites.",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "access-recheck": "dist/cli.js",
+    "access-spotter": "dist/cli.js",
     "arc": "dist/cli.js",
+    "access-recheck": "dist/cli.js",
     "accessrecheck": "dist/cli.js"
   },
   "files": [
@@ -25,10 +26,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raluonyiuke/access-recheck.git"
+    "url": "git+https://github.com/raluonyiuke/access-spotter.git"
   },
   "bugs": {
-    "url": "https://github.com/raluonyiuke/access-recheck/issues"
+    "url": "https://github.com/raluonyiuke/access-spotter/issues"
   },
   "scripts": {
     "build": "node scripts/clean.mjs && tsc",

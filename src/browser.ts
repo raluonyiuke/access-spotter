@@ -8,7 +8,7 @@ import { cleanText } from './output.js';
 const require = createRequire(import.meta.url);
 
 export async function installBrowser(timeout = 600_000, signal?: AbortSignal): Promise<void> {
-  process.stderr.write('Access-Recheck: downloading or checking Chromium through Playwright (first download about 200 MB).\n');
+  process.stderr.write('Access-Spotter: downloading or checking Chromium through Playwright (first download about 200 MB).\n');
   const installSignal = signal ? AbortSignal.any([signal, AbortSignal.timeout(timeout)]) : AbortSignal.timeout(timeout);
   await new Promise<void>((resolve, reject) => {
     const child = spawn(process.execPath, [join(dirname(require.resolve('playwright')), 'cli.js'), 'install', '--no-shell', 'chromium'], {

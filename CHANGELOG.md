@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2
+
+- Rename the project, package, and primary command to Access-Spotter / access-spotter.
+- Use the tagline: Find accessibility issues on new and existing websites.
+- Keep arc, access-recheck, and accessrecheck as command aliases.
+- Change JSON report tool.name to Access-Spotter and document upgrade steps.
+- Preserve previous release artifacts; scanner behavior is unchanged.
+
 ## 0.1.1
 
 - Use Access-Recheck for the display name and access-recheck for the repository, package, and primary CLI command.
